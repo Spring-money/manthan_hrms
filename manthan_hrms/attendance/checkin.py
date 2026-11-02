@@ -17,7 +17,7 @@ def get_session_employee(user=None):
 		"Employee",
 		{"user_id": user or frappe.session.user, "status": "Active"},
 		["name", "first_name", "employee_name"],
-		as_dict=True,
+		as_dict=True, order_by="modified desc",
 	)
 
 

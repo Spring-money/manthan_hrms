@@ -23,7 +23,7 @@ def as_user(user, fn, *args, **kwargs):
 
 def verify_quick_checkin():
 	employee_user = email_for("Priya", "Nair")
-	employee = frappe.db.get_value("Employee", {"user_id": employee_user}, "name")
+	employee = frappe.db.get_value("Employee", {"user_id": employee_user}, "name", order_by="modified desc")
 	before = set(frappe.get_all("Employee Checkin", {"employee": employee}, pluck="name"))
 	checks = []
 	try:

@@ -100,11 +100,11 @@ def email_for(first_name, last_name):
 
 
 def get_employee_by_email(company_email):
-	return frappe.db.get_value("Employee", {"company_email": company_email, "company": COMPANY_NAME})
+	return frappe.db.get_value("Employee", {"company_email": company_email, "company": COMPANY_NAME}, order_by="modified desc")
 
 
 def get_employee_by_first_name(first_name):
-	return frappe.db.get_value("Employee", {"first_name": first_name, "company": COMPANY_NAME})
+	return frappe.db.get_value("Employee", {"first_name": first_name, "company": COMPANY_NAME}, order_by="modified desc")
 
 
 def get_active_employees():
@@ -175,7 +175,7 @@ def create_sample_employees():
 
 def create_onboarding_template():
 	if existing := frappe.db.get_value(
-		"Employee Onboarding Template", {"title": ONBOARDING_TEMPLATE, "company": COMPANY_NAME}
+		"Employee Onboarding Template", {"title": ONBOARDING_TEMPLATE, "company": COMPANY_NAME}, order_by="modified desc"
 	):
 		return existing
 
@@ -199,7 +199,7 @@ def create_onboarding_template():
 
 
 def create_job_applicant():
-	if existing := frappe.db.get_value("Job Applicant", {"email_id": NEW_JOINER["applicant_email"]}):
+	if existing := frappe.db.get_value("Job Applicant", {"email_id": NEW_JOINER["applicant_email"]}, order_by="modified desc"):
 		return existing
 
 	applicant = frappe.new_doc("Job Applicant")
@@ -216,7 +216,7 @@ def create_job_applicant():
 
 
 def create_job_offer(job_applicant):
-	if existing := frappe.db.get_value("Job Offer", {"job_applicant": job_applicant, "docstatus": 1}):
+	if existing := frappe.db.get_value("Job Offer", {"job_applicant": job_applicant, "docstatus": 1}, order_by="modified desc"):
 		return existing
 
 	offer = frappe.new_doc("Job Offer")
@@ -239,7 +239,7 @@ def create_employee_onboarding(job_applicant, job_offer, template):
 	from hrms.controllers.employee_boarding_controller import get_onboarding_details
 
 	if existing := frappe.db.get_value(
-		"Employee Onboarding", {"job_applicant": job_applicant, "docstatus": 1}
+		"Employee Onboarding", {"job_applicant": job_applicant, "docstatus": 1}, order_by="modified desc"
 	):
 		return frappe.get_doc("Employee Onboarding", existing)
 
@@ -406,7 +406,7 @@ def setup_expense_accounts():
 def get_expense_claim():
 	return frappe.db.get_value(
 		"Expense Claim",
-		{"company": COMPANY_NAME, "remark": EXPENSE_CLAIM_REMARK, "docstatus": 1},
+		{"company": COMPANY_NAME, "remark": EXPENSE_CLAIM_REMARK, "docstatus": 1}, order_by="modified desc",
 	)
 
 
@@ -416,7 +416,7 @@ def create_expense_claim():
 
 	if not (claim_name := get_expense_claim()):
 		employee = frappe.db.get_value(
-			"Employee", {"company_email": TEST_EMPLOYEE["company_email"], "company": COMPANY_NAME}
+			"Employee", {"company_email": TEST_EMPLOYEE["company_email"], "company": COMPANY_NAME}, order_by="modified desc"
 		)
 		claim = frappe.new_doc("Expense Claim")
 		claim.update(
@@ -487,7 +487,7 @@ def verify_day2():
 		"Employee Onboarding",
 		{"company": COMPANY_NAME, "job_applicant": ["is", "set"], "docstatus": 1},
 		["name", "boarding_status", "employee", "project"],
-		as_dict=True,
+		as_dict=True, order_by="modified desc",
 	)
 	checks.append(("Employee Onboarding submitted", bool(onboarding)))
 	if onboarding:

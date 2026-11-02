@@ -148,7 +148,7 @@ def run_verify(method):
 
 
 def get_employee_user(first_name):
-	return frappe.db.get_value("Employee", {"first_name": first_name, "company": COMPANY_NAME}, ["name", "user_id"])
+	return frappe.db.get_value("Employee", {"first_name": first_name, "company": COMPANY_NAME}, ["name", "user_id"], order_by="modified desc")
 
 
 def verify_branding():

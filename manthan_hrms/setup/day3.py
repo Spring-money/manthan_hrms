@@ -304,7 +304,7 @@ def run_sprint6():
 
 def get_payroll_entry():
 	return frappe.db.get_value(
-		"Payroll Entry", {"company": COMPANY_NAME, "start_date": PAYROLL_START, "docstatus": 1}
+		"Payroll Entry", {"company": COMPANY_NAME, "start_date": PAYROLL_START, "docstatus": 1}, order_by="modified desc"
 	)
 
 
@@ -491,7 +491,7 @@ def get_declaration():
 			"docstatus": ["!=", 2],
 		},
 		["name", "workflow_state", "docstatus", "reviewed_by"],
-		as_dict=True,
+		as_dict=True, order_by="modified desc",
 	)
 
 
@@ -537,7 +537,7 @@ def test_fit_and_proper_declaration():
 def get_separation(docstatus):
 	return frappe.db.get_value(
 		"Employee Separation",
-		{"employee": get_employee_by_first_name(EXIT_EMPLOYEE), "company": COMPANY_NAME, "docstatus": docstatus},
+		{"employee": get_employee_by_first_name(EXIT_EMPLOYEE), "company": COMPANY_NAME, "docstatus": docstatus}, order_by="modified desc",
 	)
 
 

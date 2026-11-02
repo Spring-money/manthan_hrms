@@ -89,7 +89,7 @@ def create_company():
 	if frappe.db.exists("Company", COMPANY_NAME):
 		return
 
-	existing = frappe.db.get_value("Company", {"abbr": COMPANY_ABBR})
+	existing = frappe.db.get_value("Company", {"abbr": COMPANY_ABBR}, order_by="modified desc")
 	if existing:
 		frappe.throw(f"Company abbreviation {COMPANY_ABBR} is already used by {existing}")
 
@@ -234,7 +234,7 @@ def create_leave_types():
 
 
 def create_leave_policy():
-	existing = frappe.db.get_value("Leave Policy", {"title": LEAVE_POLICY, "docstatus": 1})
+	existing = frappe.db.get_value("Leave Policy", {"title": LEAVE_POLICY, "docstatus": 1}, order_by="modified desc")
 	if existing:
 		return existing
 
@@ -251,7 +251,7 @@ def create_leave_policy():
 
 
 def get_department(department_name):
-	return frappe.db.get_value("Department", {"department_name": department_name, "company": COMPANY_NAME})
+	return frappe.db.get_value("Department", {"department_name": department_name, "company": COMPANY_NAME}, order_by="modified desc")
 
 
 def create_test_employee():
@@ -260,7 +260,7 @@ def create_test_employee():
 		"last_name": TEST_EMPLOYEE["last_name"],
 		"company": COMPANY_NAME,
 	}
-	if existing := frappe.db.get_value("Employee", filters):
+	if existing := frappe.db.get_value("Employee", filters, order_by="modified desc"):
 		return existing
 
 	employee = frappe.new_doc("Employee")
@@ -382,7 +382,7 @@ def verify_day1():
 	from hrms.hr.doctype.leave_application.leave_application import get_leave_balance_on
 
 	installed = set(frappe.get_installed_apps())
-	employee = frappe.db.get_value("Employee", {"first_name": TEST_EMPLOYEE["first_name"], "company": COMPANY_NAME})
+	employee = frappe.db.get_value("Employee", {"first_name": TEST_EMPLOYEE["first_name"], "company": COMPANY_NAME}, order_by="modified desc")
 	blocked = set(frappe.get_all("Block Module", {"parent": TEST_HR_USER, "parenttype": "User"}, pluck="module"))
 
 	checks = [
